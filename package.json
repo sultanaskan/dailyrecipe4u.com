@@ -1,0 +1,36 @@
+{
+
+  "name": "dailyrecipe4u.com",
+
+  "version": "1.0.0",
+
+  "description": "A daily recipe website",
+
+  "author": "MD ASKAN ALI",
+
+  "main": "server.js",
+
+  "scripts": {
+
+    "start": "node server.js",
+
+    "dev": "nodemon server.js"
+
+  },
+
+  "dependencies": {
+
+    "mongodb": "^7.1.0"
+
+  },
+
+  "type": "module",
+
+  "devDependencies": {
+
+    "nodemon": "^3.1.11"
+
+  }
+
+}
+

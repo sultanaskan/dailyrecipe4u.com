@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<form action="/admin/add-recipe" method="POST" enctype="application/json">
+    <h1>Add New Recipe</h1>
+    
+    <input type="text" name="title" placeholder="Recipe Title (e.g., Spicy Tacos)" required>
+    <textarea name="description" placeholder="Short SEO Description"></textarea>
+    
+    <h3>Ingredients (comma separated)</h3>
+    <textarea name="ingredients" placeholder="Flour, Water, Salt..."></textarea>
+    
+    <h3>Instructions</h3>
+    <textarea name="instructions" placeholder="Step 1: Boil water..."></textarea>
+    
+    <button type="submit">Publish Recipe</button>
+</form>
+    
+</body>
+</html>
+
