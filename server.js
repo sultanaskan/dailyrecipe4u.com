@@ -55,9 +55,9 @@ const server = http.createServer(async (req, res) => {
     'instructions': 'instructions',
     'nutritions': 'nutritions'
   }
-
+// Sultan ahmed
 // Route handling
-  if(url.startsWith('/admin')) {
+  if(url.startsWith('/admin') && routes[url]) {
     templatePath = path.join(__dirname, 'src', 'views', 'admin', routes[url]); 
     switch(url){
       case '/admin': serveAdminDashboard(req, res, templatePath); break;
@@ -67,7 +67,7 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(404);
         res.end('Page Not Found');
     }
-  }else{
+  }else if(routes[url]){
     templatePath = path.join(__dirname, 'src', 'views', routes[url]);
     switch(url){
       case '/': serveHomePage(req, res, templatePath); break;
@@ -85,6 +85,9 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(404);
         res.end('Page Not Found');
     }
+  }else{
+      res.writeHead(404);
+      res.end('Page not found');
   }
 
  /*  if(req.method === 'GET' && contentType === 'text/html') {
