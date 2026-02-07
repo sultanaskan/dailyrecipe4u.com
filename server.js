@@ -42,6 +42,7 @@ const routes = {
 
 const server = http.createServer(async (req, res) => {
   const url = req.url;
+  console.log(`URL: ${url}, Route:${routes[url]}, Method: ${req.method}`);
   let filePath = path.join(__dirname, url === '/' ? 'index.html' : routes[url] || url);
   const extname = path.extname(filePath);
   const contentType = MIME_TYPES[extname] || 'text/plain';
@@ -61,7 +62,12 @@ const server = http.createServer(async (req, res) => {
     templatePath = path.join(__dirname, 'src', 'views', 'admin', routes[url]); 
     switch(url){
       case '/admin': serveAdminDashboard(req, res, templatePath); break;
-      case '/admin/add-recipe': serveServeAddRecipeForm(req, res, templatePath); break;
+      case '/admin/add-recipe':if(req.method === "GET"){
+                                  serveAddRecipeForm(req, res, templatePath); break;
+                              }else if(req.method === 'POST'){
+                                  console.log("This is post request")
+                                  submitNewRecipe(req, res, templatePath);
+                              }
       case '/admin/edit-recipe': serveServeEditRecipeForm(req, res, templatePath); break;
       default:
         res.writeHead(404);
@@ -71,8 +77,16 @@ const server = http.createServer(async (req, res) => {
     templatePath = path.join(__dirname, 'src', 'views', routes[url]);
     switch(url){
       case '/': serveHomePage(req, res, templatePath); break;
-      case '/login': serveLoginPage(req, res, templatePath); break;
-      case '/register': serveRegisterPage(req, res, templatePath); break; 
+      case '/login':if(req.method === 'GET'){
+                    serveLoginPage(req, res, templatePath); break;
+                  }else if (req.method === 'POST'){
+                    login(req, res, templatePath); break;
+                  }
+      case '/register': if(req.method === 'GET'){
+                    serveRegisterPage(req, res, templatePath); break;
+                  }else if(req.method === 'POST'){
+                    register(req, res, templatePath); break;
+                  }
       case '/about': serveAboutPage(req, res, templatePath); break;
       case '/contact': serveContactPage(req, res, templatePath); break;
       case '/dinners':  serveHomePage(req, res, templatePath); break;
@@ -189,31 +203,52 @@ async function handleDynamicRecipe(req, res) {
 }
 
 // Server homepage
-async function serveHomePage(req, res, templatePath){
+async function serveHomePage(req, res, templatePath) {
   try {
     const db = await connectDB();
 
-    //1. Fetch recipes from MongoDB
-    const recipes = await db.collection(__dbClns.recipes)
+    // 1. Fetch recipes from MongoDB
+    // FIX: Ensure .toArray() is called AFTER .limit()
+    const recipes = await db.collection("recipes")
       .find()
-      .sort({createdAt: -1}
+      .sort({ createdAt: -1 })
       .limit(12)
-      .toArray()
-      )
+      .toArray(); 
+
+    console.log('Recipes fetched successfully');
+
     // 2. Read the HTML template file
     let template = fs.readFileSync(templatePath, 'utf8');
-    // 3. Build the Recipe Cards HTML () SEO Friendly 
+
+    // 3. Build the Recipe Cards HTML (SEO Friendly)
     let cardsHtml = '';
-    recipes.array.forEach(recipe => {
+
+    // FIX: recipes is already an array, remove ".array"
+    recipes.forEach(recipe => {
       cardsHtml += `
       <article class="recipe-card">
           <h3>${recipe.title}</h3>
-          <p>${recipe.description}
-      `
+          <p>${recipe.description || ''}</p>
+          <a href="/recipe/${recipe.slug}">View Recipe</a>
+      </article>
+      `;
     });
+
+    // 4. Handle empty state (Good for UX)
+    if (recipes.length === 0) {
+      cardsHtml = '<p>No recipes found yet. Check back soon!</p>';
+    }
+
+    // 5. Inject and Send
+    const page = template.replace('{{RECIPE_CARDS}}', cardsHtml);
     
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(page);
+
   } catch (error) {
-    
+    console.error("Home Page Error:", error);
+    res.writeHead(500);
+    res.end("Internal server error");
   }
 }
 // Server login page
@@ -254,7 +289,7 @@ function serveAdminDashboard(req, res, templatePath){
     } 
   })};
  // Server add recipe form
-function serveServeAddRecipeForm(req, res, templatePath){
+function serveAddRecipeForm(req, res, templatePath){
   fs.readFile(templatePath, 'utf8', (err, data) => {
     if (err) {
       res.writeHead(404);
@@ -302,3 +337,61 @@ function serveContactPage(req, res, templatePath){
       res.end(data);
     }
   })}; 
+//Submit new recipe
+async function submitNewRecipe(req, res, templatePath) {
+  let body = '';
+  console.log("Inside submitNewReciep function")
+  //Get request body
+  req.on('data', (chunk) => {
+    body += chunk.toString();
+    console.log(`chunk: ${chunk}, chunktoString: $${chunk.toString()}`);
+    console.log(`body: ${body}`);
+  })
+}  
+
+//Submite Login creds
+function login(req,res , templatePath){
+  console.log('Complete your login function');
+}
+
+//User register
+async function register(req, res, templatePath){
+    let body = '';
+    req.on('data', chunk =>{
+      body += chunk.toString();
+    })
+    req.on('end', async () =>{
+      try{
+        const formData = parse(body);
+        const {username, email, password} = formData;
+        const db = await  connectDB();
+        
+        //1. check if the email is already taken or not
+        const existingUser = await  db.collection('users').find({email});
+        if(existingUser){
+          res.writeHead(400, {'Content-Type': 'text/html'});
+          return res.end('<h1> Email already exists </h1> <a href="/register"> Go back</a>');
+        }
+        // 2. Create the user object (Match your ER diagram )
+        const newUser = {
+          usename: username,
+          email: email,
+          password: password,
+          role: 'admin',
+          createdAt: new Date()
+        };
+        
+        // 3. Save to MongoDB
+        await db.collection('users').insertOne(newUser);
+
+        // 4. Redirect to Login page upon success
+        console.log('New user registerd: ', username);
+        res.writeHead(302, {'Location': '/login?registered=success'});
+        res.end();
+      }catch (error){
+        console.error("Registration Error", error);
+        res.writeHead(500);
+        res.end("Internal Server Error during registration ");
+      }
+    });
+}
