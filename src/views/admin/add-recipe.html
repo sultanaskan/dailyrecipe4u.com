@@ -8,12 +8,26 @@
 </head>
 <body>
     
-<form action="/admin/add-recipe" method="POST" enctype="application/json">
+<form action="/admin/add-recipe" method="POST" enctype="multipart/form-data">
     <h1>Add New Recipe</h1>
+     <h3>Select Category</h3>
+    <select name="category" id="recipe-category">
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Meals</option>
+        <option value="dinner">Ingredients</option>
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Dinner</option>
+        <option value="dinner">Dinner</option>
+    </select>
     
     <input type="text" name="title" placeholder="Recipe Title (e.g., Spicy Tacos)" required>
+    <h3>Recipe Image</h3>
+    <input type="file" name="recipeImage" accept="image/*" required>
     <textarea name="description" placeholder="Short SEO Description"></textarea>
-    
+   
     <h3>Ingredients (comma separated)</h3>
     <textarea name="ingredients" placeholder="Flour, Water, Salt..."></textarea>
     

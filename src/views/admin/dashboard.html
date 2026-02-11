@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | DailyRecipe4U</title>
+    <link rel="stylesheet" href="/css/admin-style.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <h1>DailyRecipe4U Admin</h1>
+            <nav>
+                <span class="user-greeting">Hello, <strong>{{USERNAME}}</strong></span>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="action-bar">
+            <h2>Recipe Management</h2>
+            <a href="/admin/add-recipe" class="btn-add">+ Add New Recipe</a>
+        </div>
+
+        <section class="recipe-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{RECIPE_TABLE_ROWS}}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        function deleteRecipe(recipeId){
+            //Show a borwser confirm dialog
+            const proceed = confirm("Are your sure want to delte this recipe?");
+            if(proceed){
+                //Redirect the browser to the delete route with the ID
+                // This trigers a GET requeest to server
+                window.location.href = `/admin/delete-recipe?id=${recipeId}`;
+            }
+        }
+
+    </script>
+</body>
+</html>
