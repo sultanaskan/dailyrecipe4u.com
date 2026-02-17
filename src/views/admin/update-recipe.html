@@ -2,40 +2,232 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Recipe | DailyRecipe4U Admin</title>
-    <link rel="stylesheet" href="/css/admin-style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe | Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary: #e67e22;
+            --dark: #2c3e50;
+            --bg: #f4f7f6;
+        }
+
+        body { background-color: var(--bg); color: var(--dark); }
+
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .form-header {
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Input Styling */
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+
+        /* Image Handling */
+        .image-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .img-box { text-align: center; }
+        .img-box img { 
+            width: 100%; 
+            height: 150px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            border: 1px solid #ddd;
+        }
+
+        /* Buttons */
+        .actions {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-cancel {
+            background: #eee;
+            color: #666;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-save:hover { background: #d35400; }
+        .btn-save:disabled { background: #ccc; }
+    </style>
 </head>
 <body>
-    <main class="container">
-        <h1>Edit Recipe</h1>
-        <form action="/admin/update-recipe" method="POST">
+
+    {{HEADER}}
+
+    <main class="form-container">
+        <div class="form-header">
+            <div>
+                <h1 style="margin:0;">📝 Edit Recipe</h1>
+                <p style="color:#999; margin:5px 0 0 0;">Updating: <strong>{{TITLE}}</strong></p>
+            </div>
+            <span style="font-size: 2rem;">🍳</span>
+        </div>
+
+        <form onsubmit="updateAndConvert(event)">
             <input type="hidden" name="id" value="{{ID}}">
 
-            <div class="form-group">
-                <label>Recipe Title</label>
-                <input type="text" name="title" value="{{TITLE}}" required>
-            </div>
+            <label style="font-weight:600;">Category</label>
+            <select name="category" id="recipe-category">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="dessert">Dessert</option>
+                <option value="healthy/vegan">Healthy/Vegan</option>
+                <option value="quick & easy">Quick & Easy</option>
+            </select>
 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description">{{DESCRIPTION}}</textarea>
-            </div>
+            <label style="font-weight:600;">Recipe Title</label>
+            <input type="text" name="title" value="{{TITLE}}" required>
 
-            <div class="form-group">
-                <label>Ingredients (comma separated)</label>
-                <input type="text" name="ingredients" value="{{INGREDIENTS}}">
+            <div class="image-section">
+                <div class="img-box">
+                    <p style="font-size:0.8rem; margin-top:0;">Current Image</p>
+                    <img src="{{IMAGE_URL}}" alt="Current">
+                </div>
+                <div class="img-box">
+                    <p style="font-size:0.8rem; margin-top:0;">New Preview</p>
+                    <img id="image-preview" src="/public/images/placeholder.webp" style="opacity: 0.5;">
+                </div>
             </div>
+            
+            <label style="font-weight:600;">Change Image (Optional)</label>
+            <input type="file" name="recipeImage" accept="image/*" onchange="previewImage(event)">
 
-            <div class="form-group">
-                <label>Instructions</label>
-                <textarea name="instructions" rows="10">{{INSTRUCTIONS}}</textarea>
-            </div>
+            <label style="font-weight:600;">Description</label>
+            <textarea name="description" rows="3">{{DESCRIPTION}}</textarea>
+
+            <label style="font-weight:600;">Ingredients</label>
+            <textarea name="ingredients">{{INGREDIENTS}}</textarea>
+
+            <label style="font-weight:600;">Instructions</label>
+            <textarea name="instructions" rows="10">{{INSTRUCTIONS}}</textarea>
 
             <div class="actions">
-                <button type="submit" class="btn-save">Update Recipe</button>
+                <button type="submit" class="btn-save" id="submit-btn">Update Recipe</button>
                 <a href="/admin/dashboard" class="btn-cancel">Cancel</a>
             </div>
         </form>
     </main>
+
+    {{FOOTER}}
+
+    <script>
+        // Pre-select the category
+        const currentCat = "{{CATEGORY_VALUE}}".toLowerCase().trim();
+        document.getElementById('recipe-category').value = currentCat;
+
+        // Visual preview for new image
+        function previewImage(event) {
+            const preview = document.getElementById('image-preview');
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    preview.src = reader.result;
+                    preview.style.opacity = "1";
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function updateAndConvert(event) {
+            event.preventDefault();
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const formData = new FormData(form);
+            const fileInput = form.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Saving Changes...";
+
+            if (file) {
+                const bitmap = await createImageBitmap(file);
+                const canvas = document.createElement('canvas');
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0);
+
+                canvas.toBlob(async (blob) => {
+                    formData.set('recipeImage', blob, 'recipe.webp');
+                    await sendData(formData);
+                }, 'image/webp', 0.75); // Using 0.75 for consistency
+            } else {
+                await sendData(formData);
+            }
+        }
+
+        async function sendData(formData) {
+            try {
+                const response = await fetch('/admin/update-recipe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.href = '/admin/dashboard?updated=1';
+                } else {
+                    alert("Update failed. Check server console.");
+                    document.getElementById('submit-btn').disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('submit-btn').disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>

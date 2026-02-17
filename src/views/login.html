@@ -2,30 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login | DailyRecipe4U Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | DailyRecipe4U Admin</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary-orange: #e67e22;
+            --dark-blue: #2c3e50;
+            --light-gray: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fdf2e9 0%, #f4f7f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .auth-container {
+            background: var(--white);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .logo-box {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: var(--dark-blue);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        p.subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Form Styling */
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary-orange);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+        }
+
+        /* Button Styling */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        /* Footer Links */
+        .auth-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .auth-footer a {
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error Message Styling */
+        #message-container:not(:empty) {
+            background: #fff5f5;
+            color: #e74c3c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            border: 1px solid #feb2b2;
+        }
+    </style>
 </head>
 <body>
+
     <main class="auth-container">
-        <h1>Admin Login</h1>
+        <div class="logo-box">🍳</div>
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Enter your credentials to manage recipes</p>
         
         <div id="message-container"></div>
 
         <form action="/login" method="POST">
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required autofocus>
+                <input type="email" id="email" name="email" placeholder="name@company.com" required autofocus>
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
             </div>
 
-            <button type="submit" class="btn-primary">Sign In</button>
+            <button type="submit" class="btn-primary">Sign In to Dashboard</button>
         </form>
-        <p>New here? <a href="/register">Create an account</a></p>
+
+        <div class="auth-footer">
+            <p>New to the kitchen? <a href="/register">Create an account</a></p>
+            <p style="margin-top: 10px;"><a href="/" style="color: #95a5a6; font-weight: 400; font-size: 0.8rem;">← Back to Website</a></p>
+        </div>
     </main>
+
+    <script>
+        // Optional: Auto-hide error messages after 5 seconds
+        const msg = document.getElementById('message-container');
+        if (msg) {
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                msg.style.transition = '0.5s';
+                setTimeout(() => msg.innerHTML = '', 500);
+            }, 5000);
+        }
+    </script>
 </body>
 </html>

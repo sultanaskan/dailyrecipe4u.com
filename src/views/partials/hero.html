@@ -1,0 +1,175 @@
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container hero-container">
+        <div class="hero-content">
+            <span class="hero-tagline">Handcrafted for Home Cooks</span>
+            <h1>Master the Art of <br><span class="text-gradient">Delicious Cooking</span></h1>
+            <p>Discover daily-updated recipes that turn simple ingredients into extraordinary meals. From 15-minute breakfasts to gourmet dinners.</p>
+            
+            <div class="hero-actions">
+                <a href="#latest" class="btn-primary">Explore Recipes</a>
+                <a href="/about" class="btn-secondary">Learn More</a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <strong>500+</strong>
+                    <span>Recipes</span>
+                </div>
+                <div class="stat-item">
+                    <strong>10k+</strong>
+                    <span>Happy Cooks</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Hero Section Base */
+.hero-section {
+    position: relative;
+    height: 80vh;
+    min-height: 600px;
+    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop'); /* Replace with your own local image later */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+/* Dark Overlay for Text Readability */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+    z-index: 1;
+}
+
+.hero-container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content {
+    max-width: 650px;
+    animation: fadeInUp 1s ease;
+}
+
+.hero-tagline {
+    display: inline-block;
+    background: rgba(230, 126, 34, 0.2);
+    color: #e67e22;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(230, 126, 34, 0.3);
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+}
+
+.text-gradient {
+    color: #e67e22; /* Highlight color */
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    color: #eee;
+    margin-bottom: 35px;
+    max-width: 500px;
+}
+
+/* Buttons */
+.hero-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.btn-primary {
+    background: #e67e22;
+    color: white;
+    padding: 15px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+}
+
+.btn-primary:hover {
+    background: #d35400;
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 15px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
+}
+
+.btn-secondary:hover {
+    background: white;
+    color: #2c3e50;
+}
+
+/* Stats */
+.hero-stats {
+    display: flex;
+    gap: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 30px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item strong {
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.stat-item span {
+    font-size: 0.8rem;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 2.8rem; }
+    .hero-section { height: auto; padding: 100px 0; }
+    .hero-actions { flex-direction: column; }
+    .hero-stats { gap: 20px; }
+}
+</style>

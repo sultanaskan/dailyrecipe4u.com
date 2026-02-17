@@ -1,0 +1,212 @@
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-column brand-info">
+            <a href="/" class="footer-logo">
+                <span class="logo-text">DailyRecipe<span class="highlight">4u</span></span>
+            </a>
+            <p>Bringing the joy of cooking to your kitchen every single day. Explore our collection of handcrafted, easy-to-follow recipes.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook">FB</a>
+                <a href="#" aria-label="Instagram">IG</a>
+                <a href="#" aria-label="Pinterest">PI</a>
+                <a href="#" aria-label="YouTube">YT</a>
+            </div>
+        </div>
+
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/recipes">Browse All Recipes</a></li>
+                <li><a href="/trending">Trending Now</a></li>
+                <li><a href="/submit-recipe">Submit a Recipe</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-column">
+            <h3>Categories</h3>
+            <ul>
+                <li><a href="/category/breakfast">Breakfast</a></li>
+                <li><a href="/category/lunch">Lunch</a></li>
+                <li><a href="/category/dinner">Dinner</a></li>
+                <li><a href="/category/dessert">Desserts</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-column newsletter">
+            <h3>Fresh Recipes in Your Inbox</h3>
+            <p>Join our community of 10,000+ home cooks.</p>
+            <form class="footer-form">
+                <input type="email" placeholder="Email Address" required>
+                <button type="submit">Join</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container flex-between">
+            <p>&copy; 2026 DailyRecipe4u. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+/* Footer Base Styles */
+.site-footer {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 80px 0 20px;
+    margin-top: 100px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.footer-column h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    font-family: 'Playfair Display', serif;
+}
+
+.footer-column p {
+    color: #bbb;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Brand Section */
+.footer-logo {
+    text-decoration: none;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.footer-logo .logo-text {
+    font-size: 1.8rem;
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-logo .highlight {
+    color: #e67e22;
+}
+
+.social-links {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    background: #e67e22;
+    transform: translateY(-3px);
+}
+
+/* Footer Links */
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 12px;
+}
+
+.footer-column ul a {
+    color: #bbb;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 0.95rem;
+}
+
+.footer-column ul a:hover {
+    color: #e67e22;
+    padding-left: 5px;
+}
+
+/* Newsletter Form */
+.footer-form {
+    display: flex;
+    margin-top: 20px;
+}
+
+.footer-form input {
+    flex: 1;
+    background: #2a2a2a;
+    border: 1px solid #333;
+    padding: 12px 15px;
+    color: #fff;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.footer-form button {
+    background: #e67e22;
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.footer-form button:hover {
+    background: #d35400;
+}
+
+/* Bottom Bar */
+.footer-bottom {
+    border-top: 1px solid #2a2a2a;
+    padding-top: 30px;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.footer-legal a {
+    color: #777;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.footer-legal a:hover {
+    color: #bbb;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

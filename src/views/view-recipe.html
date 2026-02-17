@@ -1,48 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=devide-width, initial-scale=1.0">
-        <title>{{TITLE}} | DailyRecipe4u</title>
-        <link rel="stylesheet" href="/css/style.css">
-        <style>
-            .recipe-container{max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif; line-height: 1.6;}
-            .hero-img{width: 100%; height: 400px; object-fit: cover; border-radius: 12px;}
-            .meta{color: #666; font-size: 0.9rem; margin: 10px 0;}
-            .category{background: #e67e22; color:white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;}
-            ul.ingredients{list-style: pre-line; background: #f9f9f9; padding: 20px; border-radius: 8px;}
-            .instructions{white-space: pre-line; background:#f9f9f9; padding: 20px; border-radius: 8px;}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} | DailyRecipe4u</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Modern Recipe Styling */
+        :root {
+            --brand: #e67e22;
+            --dark: #2c3e50;
+            --light-bg: #fdfdfd;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
 
-        </style>
-    </head>
-    <body>
-        <header>
+        body { background-color: #f4f7f6; color: var(--dark); }
 
-        </header>
-        
+        .recipe-page-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
 
-        <main>
-            <article class="recipe-container">
-                <img src="{{IMAGE}}" alt="{{TITLE}}" class="hero-img">
-                <span class="category">{{CATEGORY}}</span>
-                <h1 class="">{{TITLE}}</h1>
+        /* Hero Image with Aspect Ratio */
+        .hero-img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+        }
 
-                <div class="meta">Published on: {{DATE}}</div>
+        .recipe-content { padding: 40px; }
 
-                <p class="description"><em>{{DESCRIPTION}}</em></p>
+        .category-badge {
+            background: var(--brand);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-                <h3 class="section-title">Ingredients</h3>
-                <ul class="ingredients">{{INGREDIENTS}}</ul>
+        h1 { font-size: 2.8rem; margin: 20px 0 10px; line-height: 1.2; }
 
-                <h3 class="section-title">instructions</h3>
-                <div class="instructions">{{INSTRUCTIONS}}</div>
+        .recipe-meta {
+            display: flex;
+            gap: 20px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
 
-            </article>
+        .description {
+            font-size: 1.2rem;
+            color: #555;
+            font-style: italic;
+            border-left: 4px solid var(--brand);
+            padding-left: 20px;
+            margin: 30px 0;
+        }
 
-        </main>
+        /* Lists and Instructions */
+        .section-title {
+            font-size: 1.5rem;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        <footer>
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
 
-        </footer>
-    </body>
+        .ingredients-box {
+            background: #fffaf5;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #ffefe0;
+            white-space: pre-line;
+            line-height: 1.8;
+        }
+
+        .instructions-box {
+            padding: 20px 0;
+            white-space: pre-line;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Review Section */
+        .review-section {
+            background: #fcfcfc;
+            padding: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .rating-summary {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            margin-bottom: 30px;
+        }
+
+        .review-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #f0f0f0;
+        }
+
+        /* Review Form */
+        .add-review-form {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .submit-btn {
+            background: var(--brand);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .submit-btn:hover { background: #d35400; transform: translateY(-2px); }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            margin: 10px 0;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    {{HEADER}}
+    {{NAVBAR}}
+    <main>
+        <div class="recipe-page-wrapper">
+            <img src="{{IMAGE}}" alt="{{TITLE}}" class="hero-img">
+            
+            <div class="recipe-content">
+                <span class="category-badge">{{CATEGORY}}</span>
+                <h1>{{TITLE}}</h1>
+                
+                <div class="recipe-meta">
+                    <span>🗓️ {{DATE}}</span>
+                    <span>👤 By Chef Admin</span>
+                    <span>💬 {{REVIEW_COUNT}} Reviews</span>
+                </div>
+
+                <p class="description">{{DESCRIPTION}}</p>
+
+                <h3 class="section-title">🛒 Ingredients</h3>
+                <div class="ingredients-box">
+                    {{INGREDIENTS}}
+                </div>
+
+                <h3 class="section-title">👨‍🍳 Cooking Instructions</h3>
+                <div class="instructions-box">
+                    {{INSTRUCTIONS}}
+                </div>
+            </div>
+
+            <section class="review-section">
+                <h3>Community Feedback</h3>
+
+                <div class="rating-summary">
+                    <span style="font-size: 2.2rem; color: #f1c40f;">★</span>
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800;">{{AVG_RATING}} / 5</div>
+                        <div style="color: #7f8c8d; font-size: 0.8rem;">Based on {{REVIEW_COUNT}} reviews</div>
+                    </div>
+                </div>
+
+                <div class="reviews-list">
+                    {{REVIEWS_HTML}}
+                </div>
+
+                <div class="add-review-form" style="margin-top: 40px;">
+                    <h4>How did yours turn out?</h4>
+                    <form id="review-form">
+                        <input type="hidden" name="recipeId" value="{{ID}}">
+                        
+                        <label style="font-size: 0.9rem; font-weight: 600;">Your Rating:</label>
+                        <select name="rating" required style="display: block; width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                            <option value="4">⭐⭐⭐⭐ Very Good</option>
+                            <option value="3">⭐⭐⭐ Average</option>
+                            <option value="2">⭐⭐ Poor</option>
+                            <option value="1">⭐ Terrible</option>
+                        </select>
+
+                        <textarea name="comment" placeholder="Share your experience with this dish..." required rows="4"></textarea>
+
+                        <button type="submit" class="submit-btn">Post My Review</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    {{FOOTER}}
+
+    <script>
+        document.getElementById('review-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/recipe/review', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("✨ Review posted! Refreshing to show your feedback.");
+                    location.reload();
+                } else if(response.status === 401){
+                    const data = await response.json();
+                    // This is the line that actualy moves the users screen
+                    window.location.href = data.redirect;
+                    return;
+                }else {
+                    alert("Oops! Something went wrong.");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    </script>
+</body>
 </html>

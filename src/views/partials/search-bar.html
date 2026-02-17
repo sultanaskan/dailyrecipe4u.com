@@ -1,0 +1,150 @@
+<div class="search-section">
+    <div class="search-wrapper">
+        <form action="/search" method="GET" class="search-form">
+            <div class="input-group">
+                <span class="search-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Search for ingredients, recipes, or cuisines..." 
+                    aria-label="Search recipes"
+                    required
+                >
+            </div>
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+        <div class="search-suggestions">
+            <span>Popular:</span>
+            <a href="/search?q=Pasta">Pasta</a>
+            <a href="/search?q=Chicken">Chicken</a>
+            <a href="/search?q=Vegan">Vegan</a>
+            <a href="/search?q=Dessert">Dessert</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.search-section {
+    padding: 20px 0;
+    margin-top: -45px; /* Pulls it up to overlap the hero section slightly */
+    position: relative;
+    z-index: 10;
+}
+
+.search-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 50px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 40px;
+    padding: 5px 20px;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.input-group:focus-within {
+    background: #fff;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+}
+
+.search-icon {
+    color: #999;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.input-group input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 12px 0;
+    font-size: 1rem;
+    outline: none;
+    color: #333;
+}
+
+.search-btn {
+    background: #e67e22;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #d35400;
+}
+
+/* Popular Keywords Styling */
+.search-suggestions {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.search-suggestions span {
+    font-weight: 600;
+    margin-right: 8px;
+    color: #444;
+}
+
+.search-suggestions a {
+    color: #e67e22;
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.2s;
+}
+
+.search-suggestions a:hover {
+    color: #2c3e50;
+    text-decoration: underline;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .search-section {
+        margin-top: -30px;
+        padding: 0 15px;
+    }
+    .search-wrapper {
+        border-radius: 20px;
+        padding: 10px;
+    }
+    .search-form {
+        flex-direction: column;
+    }
+    .input-group {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .search-btn {
+        width: 100%;
+    }
+    .search-suggestions {
+        display: none; /* Hide tags on very small screens to save space */
+    }
+}
+</style>

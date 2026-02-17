@@ -1,0 +1,208 @@
+<div class="top-bar">
+    <div class="container flex-between">
+        <div class="top-left">
+            <span>Discover the joy of cooking every day</span>
+        </div>
+        <div class="top-right">
+            <a href="https://play.google.com/store/apps/details?id=com.sikderenterprise.moneytracker" title="Money Tracker">Money Tracker</a>
+            <a href="https://play.google.com/store/apps/details?id=com.gamingvpnpro.pingbooster" title="Gaming VPN Pro">Gaming VPN Pro</a>
+            <span class="date-today" id="current-date"></span>
+        </div>
+    </div>
+</div>
+
+<header class="main-header">
+    <div class="container flex-between">
+        <div class="logo-area">
+            <a href="/">
+                <span class="logo-icon">🍳</span>
+                <span class="logo-text">DailyRecipe<span class="highlight">4u</span></span>
+            </a>
+        </div>
+
+        <div class="header-utilities">
+            <a href="/profile" class="admin-link">Profile</a>
+            <button class="menu-toggle" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<style>
+/* Header Styles */
+.top-bar {
+    background: #2c3e50;
+    color: #bdc3c7;
+    font-size: 0.75rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-right a {
+    color: inherit;
+    text-decoration: none;
+    margin-right: 15px;
+    transition: color 0.3s;
+}
+
+.top-right a:hover { color: #fff; }
+
+.main-header {
+    background: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo-area a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.logo-icon { font-size: 1.8rem; margin-right: 10px; }
+
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.logo-text .highlight { color: #e67e22; }
+
+/* Header Utilities container - The key to alignment */
+.header-utilities {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Spacing between Profile and Menu button */
+}
+
+/* Updated Profile Button Style */
+.admin-link {
+    background: #fdf2e9;
+    color: #e67e22;
+    padding: 10px 20px; /* Slightly larger for better touch target */
+    border-radius: 50px; /* Fully rounded pill shape */
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    white-space: nowrap; /* Prevents text from wrapping */
+    display: inline-flex;
+    align-items: center;
+}
+
+.admin-link:hover {
+    background: #e67e22;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Mobile Toggle */
+.menu-toggle {
+    display: none; /* Only show on mobile via Media Queries */
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-toggle:hover {
+    background: #e9ecef;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #2c3e50;
+}
+/* Animation for the hamhurger menu*/
+.menu-toggle span{
+    transition: 0.3s;
+}
+
+.menu-toggle.open span:nth-child(1){
+    transform: translateX(7px) rotate(45deg);
+}
+
+.menu-toggle.open span:nth-child(2){
+    opacity: 0;
+}
+
+.menu-toggle.open span:nth-child(3){
+    transform: translateX(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000; /* Ensures the header stays above page content */
+        background: #fff; /* Ensures content doesn't bleed through */
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Slightly stronger shadow for visibility */
+    }
+
+    .top-left { display: none; }
+    .menu-toggle { display: flex; }
+    .header-utilities {
+        gap: 10px; /* Tighter gap on mobile */
+    }
+    .admin-link {
+        padding: 8px 14px; /* Slightly smaller on mobile to save space */
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<script>
+   
+    //Open and close the navbar in mobile schreen
+    document.addEventListener('DOMContentLoaded', () =>{
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        if(menuBtn && navLinks){
+            menuBtn.addEventListener('click', ()=>{
+                // Toggle the 'mobile-active' class on the links
+                navLinks.classList.toggle('mobile-active');
+
+                // Optional: Change the button look to an 'X'
+                menuBtn.classList.toggle('open')
+            })
+        }
+
+
+        // close menu when clicking anywhere outside 
+        window.addEventListener('click', (e) =>{
+            //If the manue is open AND the click was NOT on the menu or the button
+            if(navLinks.classList.contains('mobile-active')){
+                if(!navLinks.contains(e.target) && !menuBtn.contains(e.target)){
+                    navLinks.classList.remove('mobile-active');
+                    menuBtn.classList.remove('open');
+                }
+            }
+        })
+         // Auto-update the date in the top bar
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+
+    })
+
+
+</script>

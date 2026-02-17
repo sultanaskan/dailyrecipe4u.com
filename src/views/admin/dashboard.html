@@ -4,53 +4,287 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | DailyRecipe4U</title>
-    <link rel="stylesheet" href="/css/admin-style.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+    :root {
+        --admin-primary: #e67e22;
+        --admin-dark: #2c3e50;
+        --admin-bg: #f0f2f5;
+        --white: #ffffff;
+        --danger: #ff4757;
+        --success: #2ed573;
+        --radius: 20px;
+    }
+
+    body {
+        background-color: var(--admin-bg);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: var(--admin-dark);
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px 15px;
+    }
+
+    /* Welcome Banner */
+    .admin-welcome {
+        background: linear-gradient(135deg, var(--admin-dark) 0%, #34495e 100%);
+        color: white;
+        padding: 25px;
+        border-radius: var(--radius);
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .admin-welcome h1 { margin: 0; font-size: 1.4rem; font-weight: 800; }
+    .user-info { display: flex; align-items: center; gap: 15px; }
+
+    .btn-logout {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.1);
+        transition: 0.3s;
+    }
+
+    .btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+    /* Action Bar */
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+    }
+
+    .btn-add {
+        background: var(--admin-primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+        transition: transform 0.2s;
+    }
+
+    .btn-add:active { transform: scale(0.95); }
+
+    /* Modern Table Layout (Desktop) */
+    .table-card { overflow-x: auto; }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+    }
+
+    thead th {
+        padding: 15px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-align: left;
+    }
+
+    tbody tr {
+        background: var(--white);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    td {
+        padding: 15px;
+        background: var(--white);
+        vertical-align: middle;
+    }
+
+    td:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+    td:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+
+    /* Big Image Box Styling (Desktop preview) */
+    .recipe-thumb {
+        width: 110px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+    }
+
+    .actions-flex { display: flex; gap: 10px; }
+
+    /* --- MOBILE REWRITE --- */
+    @media (max-width: 768px) {
+        .admin-welcome {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .action-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        /* Transform table to cards */
+        table, thead, tbody, th, td, tr { display: block; }
+        thead { display: none; }
+
+        tbody tr {
+            background: var(--white);
+            margin-bottom: 40px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* Full-Bleed Large Image Box */
+        td[data-label="Preview"] {
+            padding: 0;
+            width: 100%;
+        }
+
+        .recipe-thumb {
+            width: 100%;
+            height: 260px; /* Big Thumbnail Box */
+            border-radius: 0;
+        }
+
+        /* Recipe Title in separate line */
+        td[data-label="Recipe Details"] {
+            display: block;
+            padding: 25px 20px 10px 20px;
+            text-align: left;
+        }
+
+        td[data-label="Recipe Details"] strong {
+            display: block;
+            font-size: 1.5rem; /* Big Title */
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        /* Sub-details (Created, Status) */
+        td {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        td[data-label="Preview"]:before,
+        td[data-label="Recipe Details"]:before {
+            content: none;
+        }
+
+        td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        /* Manage/Action Buttons */
+        td[data-label="Manage"] {
+            border-bottom: none;
+            padding: 20px;
+        }
+
+        .actions-flex {
+            width: 100%;
+            gap: 15px;
+        }
+
+        .btn-edit, .btn-delete {
+            flex: 1;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-edit { background: #f8fafc; color: #334155; border: 1px solid #e2e8f0; }
+        .btn-delete { background: var(--danger); color: white; }
+    }
+    </style>
 </head>
 <body>
-    <header class="admin-header">
-        <div class="container">
-            <h1>DailyRecipe4U Admin</h1>
-            <nav>
-                <span class="user-greeting">Hello, <strong>{{USERNAME}}</strong></span>
-                <a href="/logout" class="btn-logout">Logout</a>
-            </nav>
-        </div>
-    </header>
 
-    <main class="container">
+    {{HEADER}}
+
+    <main class="dashboard-container">
+        <section class="admin-welcome">
+            <div class="user-info">
+                <span style="font-size: 2.5rem;">🛡️</span>
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <span>Welcome back, <strong>{{USERNAME}}</strong></span>
+                </div>
+            </div>
+            <a href="/logout" class="btn-logout">Sign Out</a>
+        </section>
+
         <div class="action-bar">
-            <h2>Recipe Management</h2>
-            <a href="/admin/add-recipe" class="btn-add">+ Add New Recipe</a>
+            <h2 style="font-size: 1.2rem; color: var(--admin-dark); margin: 0;">Recipe Inventory</h2>
+            <a href="/admin/add-recipe" class="btn-add">＋ Create New Recipe</a>
         </div>
 
-        <section class="recipe-list">
+        <div class="table-card">
             <table>
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Created Date</th>
+                        <th>Preview</th>
+                        <th>Recipe Details</th>
+                        <th>Created</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{RECIPE_TABLE_ROWS}}
                 </tbody>
             </table>
-        </section>
+        </div>
     </main>
 
+    {{FOOTER}}
+
     <script>
-        function deleteRecipe(recipeId){
-            //Show a borwser confirm dialog
-            const proceed = confirm("Are your sure want to delte this recipe?");
-            if(proceed){
-                //Redirect the browser to the delete route with the ID
-                // This trigers a GET requeest to server
+        /**
+         * Enhanced Delete Confirmation
+         */
+        function deleteRecipe(recipeId) {
+            const message = "⚠️ Warning: This action cannot be undone. Are you sure you want to delete this recipe?";
+            
+            if (confirm(message)) {
+                // Visual feedback that something is happening
+                document.querySelector('.dashboard-container').style.opacity = '0.5';
+                document.querySelector('.dashboard-container').style.pointerEvents = 'none';
                 window.location.href = `/admin/delete-recipe?id=${recipeId}`;
             }
         }
-
     </script>
 </body>
 </html>

@@ -2,32 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register | DailyRecipe4U</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | DailyRecipe4U</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary: #e67e22;
+            --dark: #2c3e50;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+          background: linear-gradient(rgba(58, 68, 64, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .auth-container {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            background: #fff8f3;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            color: var(--dark);
+            font-size: 1.7rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        /* Form Layout */
+        .form-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #edf2f7;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: var(--white);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.25);
+        }
+
+        /* Footer */
+        .auth-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+
     <main class="auth-container">
-        <h1>Create Admin Account</h1>
+        <div class="header-icon">🧑‍🍳</div>
+        <h1>Join the Kitchen</h1>
+        <p class="subtitle">Create your admin account to start sharing recipes.</p>
+        
         <form action="/register" method="POST">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">Display Name</label>
+                <input type="text" id="username" name="username" placeholder="Chef Ramsay" required>
             </div>
             
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="chef@dailyrecipe.com" required>
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password">Security Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <p class="hint">Must be at least 8 characters long.</p>
             </div>
 
-            <button type="submit" class="btn-primary">Register</button>
+            <button type="submit" class="btn-primary">Create Account</button>
         </form>
-        <p>Already have an account? <a href="/login">Login here</a></p>
+
+        <div class="auth-footer">
+            <p>Already a member? <a href="/login">Sign In instead</a></p>
+            <p style="margin-top: 12px;"><a href="/" style="color: #64748b; font-weight: 400; font-size: 0.8rem;">← Return to Home</a></p>
+        </div>
     </main>
+
 </body>
 </html>

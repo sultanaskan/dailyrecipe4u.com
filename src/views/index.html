@@ -2,22 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DailyRecipe4U | Best Homemade Recipes</title>
-    <meta name="description" content="Discover delicious recipes daily.">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 <body>
-    <header>
-        <h1>DailyRecipe4U</h1>
-        <nav>
-            <a href="/admin/dashboard">Add Recipe</a>
-        </nav>
-    </header>
+    {{HEADER}}
+    {{NAVBAR}}
 
     <main>
-        <h2>Latest Recipes</h2>
-        <section id="recipe-list">
-            {{RECIPE_CARDS}}
-        </section>
+        {{HERO_SECTION}}
+        
+        <div class="container">
+            {{SEARCH_BAR}}
+            {{CONTENT_SUMMARY}}
+            
+            <section class="featured-slider">
+                <h2>Featured Recipes</h2>
+                {{FEATURED_SLIDER}}
+            </section>
+
+            <div class="main-grid">
+                <section class="latest-section">
+                    <h2>The Latest</h2>
+                    {{LATEST_RECIPES}}
+                </section>
+
+                <aside class="sidebar">
+                    <h3>Trending Now</h3>
+                    {{TRENDING_RECIPES}}
+                </aside>
+            </div>
+
+            {{ANOTHER_HERO}}
+
+            <section class="must-try">
+                <h2>You Must Try</h2>
+                {{MUST_TRY_RECIPES}}
+            </section>
+
+            <section class="news-seasonal-grid">
+                <div class="food-news">
+                    <h2>Food News</h2>
+                    {{FOOD_NEWS_LIST}}
+                </div>
+                <div class="seasonal">
+                    <h2>Seasonal Peaks</h2>
+                    {{SEASONAL_PEAKS}}
+                </div>
+            </section>
+
+            <section class="fresh-stars">
+                <h2>Fresh Stars</h2>
+                {{FRESH_STARS}}
+            </section>
+        </div>
     </main>
+
+    {{FOOTER}}
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/public/js/main.js"></script>
 </body>
 </html>

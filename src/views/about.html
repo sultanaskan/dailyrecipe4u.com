@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story | DailyRecipe4U</title>
+    <style>
+        .about-hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('/public/images/about-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .about-hero h1 { color: white; border: none; font-size: 3rem; margin: 0; }
+
+        .about-content {
+            max-width: 800px;
+            margin: 60px auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .about-content h2 {
+            color: var(--dark);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .mission-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+        }
+
+        .mission-box h3 { margin-top: 0; }
+
+        .team-section {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .author-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {{HEADER}}
+    {{NAVBAR}}
+
+    <main class="container">
+        <section class="about-hero">
+            <h1>Our Story</h1>
+            <p>Bringing the heart of the kitchen to your screen since 2024.</p>
+        </section>
+
+        <div class="about-content">
+            <h2>Welcome to DailyRecipe4U</h2>
+            <p>
+                At <strong>DailyRecipe4U</strong>, we believe that cooking shouldn't be a chore—it should be a joy. 
+                What started as a small collection of family recipes in a kitchen in Tongi has grown into a 
+                community-driven platform for food lovers worldwide.
+            </p>
+
+            <div class="mission-grid">
+                <div class="mission-box">
+                    <h3>Simple</h3>
+                    <p>Recipes designed for real life, with ingredients you can actually find.</p>
+                </div>
+                <div class="mission-box">
+                    <h3>Tested</h3>
+                    <p>Every dish is cooked, tasted, and refined in our own kitchen first.</p>
+                </div>
+                <div class="mission-box">
+                    <h3>Healthy</h3>
+                    <p>Focusing on fresh stars and seasonal peaks for a balanced lifestyle.</p>
+                </div>
+            </div>
+
+            <h2>Why We Do It</h2>
+            <p>
+                In a world of fast food and busy schedules, the art of home cooking is often lost. We are here 
+                to bring it back. Whether you are a beginner looking for a 15-minute breakfast or a seasoned pro 
+                tackling a complex dinner, our goal is to provide the inspiration you need.
+            </p>
+        </div>
+
+        <section class="team-section">
+            <div class="author-avatar">👨‍🍳</div>
+            <h2>Meet the Founder</h2>
+            <p style="max-width: 600px; margin: 0 auto;">
+                Hi, I'm the creator of DailyRecipe4U. I started this site because I wanted a clean, 
+                fast, and beautiful place to share my passion for homemade flavors. Every recipe shared 
+                here is a piece of my culinary journey.
+            </p>
+        </section>
+    </main>
+
+    {{FOOTER}}
+</body>
+</html>

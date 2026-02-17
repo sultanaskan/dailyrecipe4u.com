@@ -1,0 +1,169 @@
+<nav class="main-navbar">
+    <div class="container">
+        <ul class="nav-links">
+            <li><a href="/" class="active">Home</a></li>
+            <li class="dropdown">
+                <a href="/recipes">Recipes <span class="arrow">▾</span></a>
+                <div class="dropdown-content">
+                    <a href="/category/breakfast">Breakfast</a>
+                    <a href="/category/lunch">Lunch</a>
+                    <a href="/category/dinner">Dinner</a>
+                    <a href="/category/desserts">Desserts</a>
+                </div>
+            </li>
+            <li><a href="/trending">Trending</a></li>
+            <li><a href="/about">Our Story</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<style>
+/* Navbar Styles */
+.main-navbar {
+    background: #fff;
+    border-top: 1px solid #eee;
+    border-bottom: 2px solid #2c3e50;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    display: block;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect - Underline Slide */
+.nav-links a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #e67e22;
+    transition: width .3s;
+    margin-top: 4px;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-links a:hover {
+    color: #e67e22;
+}
+
+.nav-links a.active {
+    color: #e67e22;
+}
+
+/* Dropdown Logic */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+    z-index: 1;
+    border-top: 3px solid #e67e22;
+}
+
+.dropdown-content a {
+    padding: 12px 20px;
+    text-transform: none;
+    font-weight: 500;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.dropdown-content a::after {
+    display: none; /* No underline for dropdown items */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.arrow {
+    font-size: 0.8rem;
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Hide by default on mobile, can be toggled via JS */
+        flex-direction: column;
+        background: #fff;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        border-bottom: 3px solid #e67e22;
+        text-align: center;
+    }
+    /*This  class is added by javascript when clicking the button */
+    .nav-links.mobile-active{
+        display: flex;
+        animation: fadeIn 0.3s ease forwards;
+        position: fixed; /* Fixes it to the screen */
+        top: 70px; /* Adjust this to match your header height */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 70px); /* Fill the rest of the screen */
+        background: #fff;
+        overflow-y: auto; /* Allow scrolling inside the menu */
+        z-index: 999;
+    }
+
+    .nav-links li{
+        width: 100%;
+        border-bottom: 1px solid #eee;
+    }
+    .nav-links a {
+        padding: 15px;
+        width: 100%;
+    }
+
+    /* Make dropdown items visible or clickable on mobile*/
+    .dropdown-content{
+        padding: static;
+        display: none;
+        width: 100%;
+        box-shadow: none;
+        background: #fdf2e9;
+    }
+
+    .dropdown:hover .dropdown-content{
+        display: block;
+    }
+
+    .main-navbar { position: relative; }
+}
+</style>

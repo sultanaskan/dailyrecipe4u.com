@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | DailyRecipe4U</title>
+    <style>
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .contact-form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+        }
+
+        .contact-info-card {
+            background: var(--dark);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            height: fit-content;
+        }
+
+        .info-item {
+            margin-bottom: 25px;
+        }
+
+        .info-item h4 {
+            color: var(--primary);
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .info-item p { margin: 0; font-size: 0.95rem; line-height: 1.4; }
+
+        @media (max-width: 992px) {
+            .contact-wrapper { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    {{HEADER}}
+    {{NAVBAR}}
+
+    <main class="container">
+        <section class="contact-header" style="text-align: center; margin-top: 50px;">
+            <h1>Get In Touch</h1>
+            <p>Have a recipe question or a business inquiry? We'd love to hear from you.</p>
+        </section>
+
+        <div class="contact-wrapper">
+            <div class="contact-form-card">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <select name="subject">
+                            <option value="general">General Inquiry</option>
+                            <option value="recipe">Recipe Question</option>
+                            <option value="ads">Advertising/Partnership</option>
+                            <option value="bug">Technical Issue</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="How can we help you?" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+            <aside class="contact-info-card">
+                <h3>Our Office</h3>
+                <div class="info-item">
+                    <h4>Email</h4>
+                    <p>hello@dailyrecipe4u.com</p>
+                    <p>support@dailyrecipe4u.com</p>
+                </div>
+                <div class="info-item">
+                    <h4>Location</h4>
+                    <p>Tongi, Dhaka Division</p>
+                    <p>Bangladesh</p>
+                </div>
+                <div class="info-item">
+                    <h4>Socials</h4>
+                    <p>Instagram: @dailyrecipe4u</p>
+                    <p>Facebook: /dailyrecipe4u</p>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    {{FOOTER}}
+
+    <script>
+        // Use Fetch to send data without reloading (Stay with your Fetch strategy!)
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    e.target.reset();
+                } else {
+                    alert('Failed to send message.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>

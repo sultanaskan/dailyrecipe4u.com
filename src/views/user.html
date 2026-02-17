@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | DailyRecipe4U</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --user-primary: #3498db; /* Blue for regular users instead of Admin Orange */
+            --text-dark: #2c3e50;
+            --bg-soft: #f8f9fa;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-soft);
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .profile-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Top Profile Header */
+        .profile-header {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .user-info-flex {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 10px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .user-text h1 { margin: 0; font-size: 1.8rem; color: var(--text-dark); }
+        .user-text p { margin: 5px 0 0; color: #7f8c8d; }
+
+        /* Logout Button */
+        .btn-logout {
+            background: #fff0f0;
+            color: #e74c3c;
+            padding: 12px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #ffcccc;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+        }
+
+        /* Main Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: #95a5a6; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Favorites List */
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            transition: 0.2s;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 1px solid transparent;
+        }
+
+        .favorite-item:hover {
+            background: #f0f7ff;
+            border-color: #d6eaff;
+        }
+
+        .favorite-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .favorite-item div h4 { margin: 0; font-size: 1rem; }
+        .favorite-item div span { font-size: 0.8rem; color: #7f8c8d; }
+
+        @media (max-width: 768px) {
+            .profile-header { flex-direction: column; text-align: center; gap: 20px; }
+            .user-info-flex { flex-direction: column; }
+            .content-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    {{HEADER}}
+
+    <div class="profile-wrapper">
+        <header class="profile-header">
+            <div class="user-info-flex">
+                <div class="user-avatar">{{INITIALS}}</div>
+                <div class="user-text">
+                    <h1>Hello, {{USERNAME}}!</h1>
+                    <p>Member since {{JOIN_DATE}}</p>
+                </div>
+            </div>
+            <a href="/logout" class="btn-logout">🚪 Log Out</a>
+        </header>
+
+        <div class="content-grid">
+            <aside class="card">
+                <h3>Account Settings</h3>
+                <form action="/user/update-profile" method="POST">
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" name="username" value="{{USERNAME}}">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" value="{{EMAIL}}" disabled>
+                    </div>
+                    <button type="submit" class="btn-logout" style="width: 100%; color: var(--user-primary); border-color: var(--user-primary); background: #f0f7ff;">
+                        Update Profile
+                    </button>
+                </form>
+            </aside>
+
+            <section class="card">
+                <h3>❤️ My Favorite Recipes</h3>
+                <div class="favorites-list">
+                    {{FAVORITE_RECIPES_HTML}}
+                    
+                    <div style="text-align: center; padding: 20px; color: #95a5a6; {{DISPLAY_EMPTY}}">
+                        <p>You haven't saved any recipes yet.</p>
+                        <a href="/" style="color: var(--user-primary);">Browse Recipes</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {{FOOTER}}
+
+</body>
+</html>

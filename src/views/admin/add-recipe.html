@@ -1,42 +1,223 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add New Recipe | Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary: #e67e22;
+            --dark: #2c3e50;
+            --bg: #f4f7f6;
+        }
+
+        body { background-color: var(--bg); color: var(--dark); }
+
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .form-header {
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+
+        h1 { font-size: 1.8rem; margin: 0; color: var(--dark); }
+
+        h3 { font-size: 1rem; margin: 20px 0 10px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Input Styling */
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+
+        textarea { min-height: 120px; font-family: inherit; resize: vertical; }
+
+        /* Image Preview Box */
+        .image-upload-wrapper {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: 0.3s;
+            background: #fafafa;
+        }
+
+        .image-upload-wrapper:hover { border-color: var(--primary); }
+
+        #image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none; /* Hidden until file selected */
+        }
+
+        /* Checkbox Styling */
+        .checkbox-group {
+            background: #fff8f3;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffeada;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; }
+
+        /* Submit Button */
+        .btn-publish {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-publish:hover { background: #d35400; transform: translateY(-2px); }
+        .btn-publish:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
 </head>
 <body>
-    
-<form action="/admin/add-recipe" method="POST" enctype="multipart/form-data">
-    <h1>Add New Recipe</h1>
-     <h3>Select Category</h3>
-    <select name="category" id="recipe-category">
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Meals</option>
-        <option value="dinner">Ingredients</option>
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Dinner</option>
-        <option value="dinner">Dinner</option>
-    </select>
-    
-    <input type="text" name="title" placeholder="Recipe Title (e.g., Spicy Tacos)" required>
-    <h3>Recipe Image</h3>
-    <input type="file" name="recipeImage" accept="image/*" required>
-    <textarea name="description" placeholder="Short SEO Description"></textarea>
-   
-    <h3>Ingredients (comma separated)</h3>
-    <textarea name="ingredients" placeholder="Flour, Water, Salt..."></textarea>
-    
-    <h3>Instructions</h3>
-    <textarea name="instructions" placeholder="Step 1: Boil water..."></textarea>
-    
-    <button type="submit">Publish Recipe</button>
-</form>
-    
+
+    {{HEADER}}
+
+    <main class="form-container">
+        <div class="form-header">
+            <h1>🍳 Add New Recipe</h1>
+            <p style="color: #999;">Fill out the details below to publish a new dish.</p>
+        </div>
+
+        <form onsubmit="convertAndUpload(event)">
+            <h3>1. Classification</h3>
+            <select name="category" id="recipe-category">
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="dessert">Dessert</option>
+                <option value="healthy-vegan">Healthy/Vegan</option>
+                <option value="quick-easy">Quick & Easy</option>
+            </select>
+
+            <input type="text" name="title" placeholder="Recipe Title (e.g., Spicy Tacos)" required>
+
+            <h3>2. Visuals</h3>
+            <div class="image-upload-wrapper">
+                <input type="file" name="recipeImage" id="file-input" accept="image/*" required onchange="previewImage(event)">
+                <img id="image-preview" alt="Preview">
+                <p style="font-size: 0.8rem; color: #7f8c8d; margin-top: 10px;">Supported: JPG, PNG, WEBP. Max size 5MB.</p>
+            </div>
+
+            <textarea name="description" placeholder="Short SEO Description (One or two sentences summarizing the dish)"></textarea>
+
+            <h3>3. Content</h3>
+            <textarea name="ingredients" placeholder="Ingredients: Use commas to separate (e.g. 2 cups Flour, 1 tsp Salt, 2 Eggs)"></textarea>
+            <textarea name="instructions" placeholder="Instructions: Step 1: Boil water... Step 2: Mix ingredients..."></textarea>
+
+            <div class="checkbox-group">
+                <label for="isFeatured">
+                    <input type="checkbox" id="isFeatured" name="isFeatured">
+                    <span>⭐ Feature this recipe in the homepage slider</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-publish" id="submit-btn">Publish Recipe</button>
+        </form>
+    </main>
+
+    {{FOOTER}}
+
+    <script>
+        // Preview image before upload
+        function previewImage(event) {
+            const reader = new FileReader();
+            const preview = document.getElementById('image-preview');
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        async function convertAndUpload(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitBtn = document.getElementById('submit-btn');
+            const fileInput = form.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+
+            if(!file) return alert("Please select an image");
+
+            // Change button state
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Converting & Uploading...";
+
+            try {
+                // 1. Create Bitmap & Canvas for WebP conversion
+                const bitmap = await createImageBitmap(file);
+                const canvas = document.createElement('canvas');
+                
+                // Keep dimensions but you could also resize here if needed
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(bitmap, 0, 0);
+
+                // 2. Export as WebP (Quality 0.75 for balance)
+                canvas.toBlob(async (blob) => {
+                    const formData = new FormData(form);
+
+                    // 3. Replace the original file with optimized WebP
+                    formData.set('recipeImage', blob, 'recipe.webp');
+
+                    // 4. Send to server
+                    const response = await fetch('/admin/add-recipe', {
+                        method: 'POST',
+                        body: formData 
+                    });
+
+                    if(response.ok) {
+                        window.location.href = '/admin/dashboard?success=1';
+                    } else {
+                        throw new Error("Server responded with an error");
+                    }
+                }, 'image/webp', 0.75);
+
+            } catch (err) {
+                console.error(err);
+                alert("Upload failed. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Publish Recipe";
+            }
+        }
+    </script>
 </body>
 </html>
-
