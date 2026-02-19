@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | DailyRecipe4U</title>
+    <style>
+        .error-container {
+            text-align: center;
+            padding: 100px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .error-description {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .back-home-btn {
+            background: var(--primary);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-3px);
+            background: #d35400;
+        }
+
+        .search-suggestion {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    {{HEADER}}
+    {{NAVBAR}}
+
+    <main class="container">
+        <div class="error-container">
+            <h1 class="error-code">404</h1>
+            <div class="error-icon">🥘💨</div>
+            <p class="error-message">Oops! This recipe has gone up in smoke.</p>
+            <p class="error-description">
+                We couldn't find the page you were looking for. It might have been moved, 
+                deleted, or perhaps it never existed in our cookbook.
+            </p>
+            
+            <a href="/" class="back-home-btn">Back to the Homepage</a>
+
+            <div class="search-suggestion">
+                <p>Or try searching for something delicious:</p>
+                {{SEARCH_BAR}}
+            </div>
+        </div>
+    </main>
+
+    {{FOOTER}}
+</body>
+</html>

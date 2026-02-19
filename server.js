@@ -12,6 +12,33 @@ import { buffer } from 'stream/consumers';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 1. DECLARE OUTSIDE: These live in the "Global Scope" of your app
+let cachedHeader = '';
+let cachedNavbar = '';
+let cachedFooter = '';
+let cachedIndexHtml = '';
+let cachedHero = '';
+let cachedSearch = '';
+let cachedContentSummary = '';
+let cachedSliderShell = '';
+
+// 2. RUN ONCE: This runs only once when the script starts
+const cacheTemplates = () => {
+    cachedHeader = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials', 'header.html' ), 'utf8');
+    cachedNavbar = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials', 'navbar.html' ), 'utf8');
+    cachedFooter = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials', 'footer.html' ), 'utf8');
+     // 2. Load the base template
+    cachedIndexHtml = fs.readFileSync(path.join(__dirname, 'src', 'views', 'index.html'), 'utf8');
+    cachedHero = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials',  'hero.html'), 'utf8')
+    cachedSearch = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials', 'search-bar.html'), 'utf8');
+    cachedContentSummary = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials',  'content-summary.html'), 'utf8')
+    cachedSliderShell = fs.readFileSync(path.join(__dirname, 'src', 'views', 'partials', 'featured-slider.html'), 'utf8');
+  
+   
+};
+cacheTemplates();
+
+
 const MIME_TYPES = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -59,7 +86,7 @@ const server = http.createServer(async (req, res) => {
 
   //1. HANDLE STATIC IMAGES
   // We look for any request that ends with common image extensions
-  if(pathName.match(/\.(jpg|jpeg|png|gif|webp)$/)){
+  if(pathName.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)){
 
     //We extract just the filename from the URL
     // (This fixes the / recipe/image.jpg problem)
@@ -77,7 +104,8 @@ const server = http.createServer(async (req, res) => {
                 '.webp': 'image/webp',
                 '.jpg': 'image/jpeg',
                 '.jpeg': 'image/jpeg',
-                '.png': 'image/png'
+                '.png': 'image/png',
+                '.ico' : 'image/x-icon'
             }[ext] || 'image/jpeg';
       res.writeHead(200, {'Content-Type':contentType});
       res.end(data);            
@@ -177,8 +205,7 @@ const server = http.createServer(async (req, res) => {
   }else if(pathName.startsWith('/category')){
      serveCatagoryPage(req, res);
   } else {
-      res.writeHead(404);
-      res.end('Page not found');
+      serve404Page(req, res); 
   }
 
  /*  if(req.method === 'GET' && contentType === 'text/html') {
@@ -252,16 +279,15 @@ const server = http.createServer(async (req, res) => {
 });
 
 
-
-server.listen(3000,  async () => console.log('Server running on http://localhost:3000'));
-
-
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port http://localhost:${PORT}`);
+});
 
 
 // Server homepage
 async function serveHomePage(req, res) {
     const db = await connectDB();
-    const viewsPath = path.join(process.cwd(), 'src', 'views');
 
     // 1. Fetch Data for different sections
     const latest = await db.collection('recipes').find().sort({createdAt: -1}).limit(6).toArray();
@@ -269,16 +295,7 @@ async function serveHomePage(req, res) {
     const featured = await db.collection('recipes').find({isFeatured: true}).limit(3).toArray();
 
  
-    // 2. Load the base template
-    let html = fs.readFileSync(path.join(viewsPath, 'index.html'), 'utf8');
-
-    // 3. Load Static Partials
-    const header = fs.readFileSync(path.join(viewsPath, 'partials/header.html'), 'utf8');
-    const navbar = fs.readFileSync(path.join(viewsPath, 'partials/navbar.html'), 'utf8');
-    const hero = fs.readFileSync(path.join(viewsPath, 'partials/hero.html'), 'utf8')
-    const search = fs.readFileSync(path.join(viewsPath, 'partials/search-bar.html'), 'utf8');
-    const sliderShell = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'featured-slider.html'), 'utf8');
-  
+   
 
     // 4. Generate Dynamic HTML for sections
     const latestHtml = latest.map(r => renderRecipeCard(r)).join('');
@@ -294,24 +311,24 @@ async function serveHomePage(req, res) {
             </div>
         </a>
     </div>`).join('');
-    const finalSliderHtml = sliderShell.replace('{{SLIDER_ITEMS}}', sliderItemsHtml);
+    const finalSliderHtml = cachedSliderShell.replace('{{SLIDER_ITEMS}}', sliderItemsHtml);
 
     // 5. Massive Replacement
-    const finalHtml = html
-        .replace('{{HEADER}}', header)
-        .replace('{{NAVBAR}}', navbar)
-        .replace('{{SEARCH_BAR}}', search)
-        .replace('{{HERO_SECTION}}', hero)
-        .replace('{{CONTENT_SUMMARY}}', fs.readFileSync(path.join(viewsPath, 'partials/content-summary.html'), 'utf8'))
+    const finalHtml = cachedIndexHtml
+        .replace('{{HEADER}}', cachedHeader)
+        .replace('{{NAVBAR}}', cachedNavbar)
+        .replace('{{SEARCH_BAR}}', cachedSearch)
+        .replace('{{HERO_SECTION}}', cachedHero)
+        .replace('{{CONTENT_SUMMARY}}', cachedContentSummary)
         .replace('{{LATEST_RECIPES}}', latestHtml)
         .replace('{{TRENDING_RECIPES}}', trendingHtml)
         .replace('{{FEATURED_SLIDER}}', finalSliderHtml)
-        .replace('{{ANOTHER_HERO}}', hero)
+        .replace('{{ANOTHER_HERO}}', cachedHero)
         .replace('{{MUST_TRY_RECIPES}}', latestHtml)
         .replace('{{SEASONAL_PEAKS}}', latestHtml)
         .replace('{{FRESH_STARS}}', latestHtml)        
         // Add all other replacements here...
-        .replace('{{FOOTER}}', fs.readFileSync(path.join(viewsPath, 'partials/footer.html'), 'utf8'));
+        .replace('{{FOOTER}}', cachedFooter || '');
 
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.end(finalHtml);
@@ -415,14 +432,11 @@ async function serveAdminDashboard(req, res, templatePath, cookies) {
         // 1. Read the Main Template
         let template = fs.readFileSync(templatePath, 'utf8');
 
-        // 2. Read Partials (Header and Footer)
-        const headerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8');
-        const footerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html'), 'utf8');
-
+       
         // 3. Perform Replacements
         let finalHtml = template
-            .replace('{{HEADER}}', headerHtml)
-            .replace('{{FOOTER}}', footerHtml)
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{FOOTER}}', cachedFooter)
             .replace('{{USERNAME}}', username)
             .replace('{{RECIPE_TABLE_ROWS}}', tableRows);
 
@@ -443,17 +457,11 @@ async function serveAddRecipeForm(req, res, templatePath) {
         // 1. Read the main add-recipe template
         let html = fs.readFileSync(templatePath, 'utf8');
 
-        // 2. Read the partials (Header and Footer)
-        const headerPath = path.join(process.cwd(), 'src', 'views', 'partials', 'header.html');
-        const footerPath = path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html');
-
-        const headerHtml = fs.readFileSync(headerPath, 'utf8');
-        const footerHtml = fs.readFileSync(footerPath, 'utf8');
-
+     
         // 3. Inject partials into the main template
         const finalHtml = html
-            .replace('{{HEADER}}', headerHtml)
-            .replace('{{FOOTER}}', footerHtml);
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{FOOTER}}', cachedFooter);
 
         // 4. Send the complete page
         res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -492,14 +500,12 @@ async function serveEditPage(req, res, templatePath, query) {
 
         // 3. Read the main template and partials
         let template = fs.readFileSync(templatePath, 'utf8');
-        const headerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8');
-        const footerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html'), 'utf8');
-
+      
         // 4. Perform replacements
         // We use global Regex /.../g for ID and TITLE because they appear multiple times in the HTML
         const finalHtml = template
-            .replace('{{HEADER}}', headerHtml)
-            .replace('{{FOOTER}}', footerHtml)
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{FOOTER}}', cachedFooter)
             .replace(/{{ID}}/g, recipe._id.toString())
             .replace(/{{TITLE}}/g, recipe.title || '')
             .replace('{{CATEGORY_VALUE}}', (recipe.category || 'dinner').toLowerCase().trim())
@@ -533,9 +539,9 @@ function serveAboutPage(req, res){
 
         // SSR Replacement
         let renderedHtml = html
-            .replace('{{HEADER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8'))
-            .replace('{{NAVBAR}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'navbar.html'), 'utf8'))
-            .replace('{{FOOTER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html'), 'utf8'));
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{NAVBAR}}', cachedNavbar)
+            .replace('{{FOOTER}}', cachedFooter);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(renderedHtml);
@@ -554,9 +560,9 @@ const contactPath = path.join(process.cwd(), 'src', 'views', 'contact.html');
 
         // SSR Replacement
         let renderedHtml = html
-            .replace('{{HEADER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html')))
-            .replace('{{NAVBAR}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'navbar.html')))
-            .replace('{{FOOTER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html')));
+             .replace('{{HEADER}}', cachedHeader)
+            .replace('{{NAVBAR}}', cachedNavbar)
+            .replace('{{FOOTER}}', cachedFooter);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(renderedHtml);
@@ -708,14 +714,7 @@ async function login(req,res ){
     }
   })
 }
-// Logout funciotn
-function logout(res){
-  res.writeHead(302, {'Set-Cookie':'session=; HttpOnly; Path=/; Max-Age=0;', 
-    'Location':'/login'
-  });
-  res.end();
 
-}
 
 //User register
 async function register(req, res, templatePath){
@@ -962,8 +961,9 @@ async function servePublicRecipePage(req, res) {
     
     // 7. Perform replacements 
     const finalHtml = html
-      .replace('{{HEADER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8'))
-      .replace('{{NAVBAR}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'navbar.html'), 'utf8'))
+      .replace('{{HEADER}}', cachedHeader)
+      .replace('{{NAVBAR}}', cachedNavbar)
+      .replace('{{FOOTER}}', cachedFooter)
       .replace(/{{ID}}/g, recipe._id.toString()) // Needed for the hidden input in your form
       .replace(/{{TITLE}}/g, recipe.title)   
       .replace('{{DESCRIPTION}}', recipe.description || '')
@@ -974,8 +974,7 @@ async function servePublicRecipePage(req, res) {
       .replace('{{DATE}}', new Date(recipe.createdAt || Date.now()).toLocaleDateString())
       .replace('{{AVG_RATING}}', avgRating)
       .replace('{{REVIEW_COUNT}}', reviewCount)
-      .replace('{{REVIEWS_HTML}}', reviewsHtml)
-      .replace('{{FOOTER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html')));
+      .replace('{{REVIEWS_HTML}}', reviewsHtml);
 
     // 8. SEND Response
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -1047,18 +1046,11 @@ async function serveCatagoryPage(req, res) {
             .sort({ createdAt: -1 })
             .toArray();
 
-        setTimeout(() => {
-          console.log("Category Name: ", categoryRecipes)
-        }, 5000);    
-        
     
         
         // 3. Read your category-page template
         let html = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'category.html'), 'utf8');
-        const headerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8');
-        const navbarHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'navbar.html'))
-        const footerHtml = fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html'), 'utf8');
-
+      
         // 4. Generate the HTML for the cards
         const cardsHtml = categoryRecipes.map(recipe => `
             <div class="recipe-card">
@@ -1077,9 +1069,9 @@ async function serveCatagoryPage(req, res) {
         const finalHtml = html
             .replaceAll('{{CATEGORY_NAME}}', categoryName.toUpperCase())
             .replace('{{RECIPE_CARDS}}', cardsHtml || '<p>No recipes found in this category yet.</p>')
-            .replace('{{HEADER}}', headerHtml) // Use your partials
-            .replace('{{NAVBAR}}', navbarHtml)
-            .replace('{{FOOTER}}', footerHtml);
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{NAVBAR}}', cachedNavbar)
+            .replace('{{FOOTER}}', cachedFooter);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(finalHtml);
@@ -1125,10 +1117,9 @@ async function serveProfilePage(req, res, userId) {
                 .replace('{{JOIN_DATE}}', user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recent')
                 .replace('{{RECIPE_COUNT}}', user.recipeCount || 0)
                 .replace('{{USER_INITIAL}}', (user.username || 'U').charAt(0).toUpperCase())
-                .replace('{{HEADER}}',  fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'header.html'), 'utf8')) 
-                .replace('{{NAVBAR}}',  fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'navbar.html'), 'utf8')) 
-                .replace('{{FOOTER}}', fs.readFileSync(path.join(process.cwd(), 'src', 'views', 'partials', 'footer.html'), 'utf8'));
-
+                .replace('{{HEADER}}', cachedHeader)
+                .replace('{{NAVBAR}}', cachedNavbar)
+                .replace('{{FOOTER}}', cachedFooter);
             // 4. Send the final HTML
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(renderedHtml);
@@ -1139,6 +1130,30 @@ async function serveProfilePage(req, res, userId) {
         res.writeHead(500);
         res.end("Internal Server Error");
     }
+}
+
+
+// Serve 404 page res.writeHead(404);
+function serve404Page(req, res){
+  const errorPath = path.join(process.cwd(), 'src', 'views', '404.html');
+    
+    fs.readFile(errorPath, 'utf8', (err, html) => {
+        if (err) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            return res.end("404 - Page Not Found");
+        }
+
+        // SSR Replacement
+        let renderedHtml = html
+            .replace('{{HEADER}}', cachedHeader)
+            .replace('{{NAVBAR}}', cachedNavbar)
+            .replace('{{SEARCH_BAR}}',  '') // Reusing your search bar partial
+            .replace('{{FOOTER}}', cachedFooter);
+
+        // Crucial: Set the status to 404
+        res.writeHead(404, { 'Content-Type': 'text/html' });
+        res.end(renderedHtml);
+    });
 }
 
 //**
