@@ -666,23 +666,26 @@ async function login(req,res ){
   req.on('end', async ()=>{
     try{
       const {email, password} = queryStringParser(body); 
-      console.log(`Email: ${email} \n Password: ${password}`) 
+      
 
       //2. Find the user in mongoDB
-      const user = await db.collection('users').findOne({email: email});
-      let redirectUrl = '/'; // Default fallback
+      const user = await db.collection('users').findOne({email: email.trim()});
+      // Default fallback
+      console.log(`Email: ${email} \n Password: ${password} \n User is : ${JSON.stringify(user)}`) 
 
-      if (user.role === 'admin') {
-          redirectUrl = '/admin/dashboard';
-      } else if (user.role === 'editor') {
-          redirectUrl = '/editor-dashboard';
-      } else {
-          redirectUrl = '/profile'; // For standard users
-      }
-
+      
       //3. Verify Credentials
       // (Note: In production use bcrypt.compare(password, user.password))
       if(user &&  user.password === password){
+         let redirectUrl = '/';
+          if (user.role === 'admin') {
+            redirectUrl = '/admin/dashboard'; 
+        } else if (user.role === 'editor') {
+            redirectUrl = '/editor-dashboard';
+        } else {
+            redirectUrl = '/profile'; // For standard users
+        }
+
         //4. Generate A SESSION the raw Way
         // We create a simple string with user info and encode it to Bse64
         const sessionData = JSON.stringify({
@@ -1199,9 +1202,19 @@ function CookieParserHelper(req){
     const cookies = {};
     const cookie = req.headers.cookie?.split(';');
     cookie?.forEach(co =>{
-       let [key, value] = co.split('=');
-       value = JSON.parse(Buffer.from(value, "base64"));
-       cookies[key] = value;
+       const parts = co.split('=');
+       const key = parts[0].trim();
+       const value = parts[1] ? decodeURIComponent(parts[1]).trim() : '';
+       try {
+          if(value.startsWith('{') || value.startsWith('[')){
+            cookies[key] = JSON.parse(value);
+          }else{
+            cookies[key] = value;
+          }
+       } catch (error) {
+        cookies[key] = value;
+       }
+      // value = JSON.parse(Buffer.from(value, "base64"));
     })
     return cookies;
 }
