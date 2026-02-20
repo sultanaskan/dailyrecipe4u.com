@@ -6,7 +6,6 @@ const dbName = "dailyrecipe4u";
 //const uri = "mongodb+srv://jakareatanmoy001_db_user:DLVjCkDQTKpCkQOp@cluster0.157bspu.mongodb.net/?appName=Cluster0";
 const uri = process.env.MONGODB_URI;
 
-
 let db;
 
 async function connectDB() {
