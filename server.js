@@ -677,6 +677,7 @@ async function login(req,res ){
       //3. Verify Credentials
       // (Note: In production use bcrypt.compare(password, user.password))
       if(user &&  user.password === password){
+        console.log(`user founded: ${user}`)
          let redirectUrl = '/';
           if (user.role === 'admin') {
             redirectUrl = '/admin/dashboard'; 
