@@ -721,6 +721,16 @@ async function login(req,res ){
   })
 }
 
+//Submite Logout creds
+async function logout(req,res ){
+        res.writeHead(302, {
+          'Set-Cookie': `session=${''}; HttpOnly; Path=/; Max-Age=0`,
+          'Location': '/login'
+        })
+        res.end();
+  }
+
+
 
 //User register
 async function register(req, res, templatePath){
