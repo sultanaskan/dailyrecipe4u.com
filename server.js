@@ -196,7 +196,7 @@ const server = http.createServer(async (req, res) => {
                       return res.end();
                     }
                     serveProfilePage(req, res, userID); break;           
-      case '/logout' : logout(res); break;            
+      case '/logout' : logout(res, res); break;            
       case '/about': serveAboutPage(req, res); break;
       case '/contact': serveContactPage(req, res); break;
       default:
