@@ -2,8 +2,8 @@ import { MongoClient } from 'mongodb';
 
 const dbName = "dailyrecipe4u";
 // srv ছাড়া সরাসরি নোড ইউআরএল (পাসওয়ার্ডের জায়গায় আপনার পাসওয়ার্ড বসান)
-//const uri = "mongodb+srv://jakareatanmoy001_db_user:DLVjCkDQTKpCkQOp@cluster0.157bspu.mongodb.net/?appName=Cluster0";
-const uri = "mongodb://localhost:27017/dailyrecipe4u";
+const uri = "mongodb+srv://jakareatanmoy001_db_user:DLVjCkDQTKpCkQOp@cluster0.157bspu.mongodb.net/?appName=Cluster0";
+//const uri = "mongodb://localhost:27017/dailyrecipe4u";
 let db;
 
 async function connectDB() {
