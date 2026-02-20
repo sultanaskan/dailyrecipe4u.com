@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import {parse} from 'querystring';  
 import { ObjectId } from 'mongodb';
 import { buffer } from 'stream/consumers';
+import 'dotenv/config';
 //testing
 
 
@@ -189,7 +190,7 @@ const server = http.createServer(async (req, res) => {
                     register(req, res, templatePath); break;
                   };
        case '/profile':
-                    const userID = cookies?.session?.userID;
+                    const userID = JSON.parse(Buffer.from(CookieParserHelper(req)?.session, 'base64').toString('utf-8')).userID;
                     if(!userID){
                       res.writeHead(302, {'location': '/login'});
                       return res.end();
@@ -677,7 +678,7 @@ async function login(req,res ){
       //3. Verify Credentials
       // (Note: In production use bcrypt.compare(password, user.password))
       if(user &&  user.password === password){
-        console.log(`user founded: ${user}`)
+        console.log(`User founded: ${user}`)
          let redirectUrl = '/';
           if (user.role === 'admin') {
             redirectUrl = '/admin/dashboard'; 
@@ -686,6 +687,7 @@ async function login(req,res ){
         } else {
             redirectUrl = '/profile'; // For standard users
         }
+
 
         //4. Generate A SESSION the raw Way
         // We create a simple string with user info and encode it to Bse64
@@ -701,7 +703,7 @@ async function login(req,res ){
           'Set-Cookie': `session=${sessionToken}; HttpOnly; Path=/; Max-Age=86400`,
           'Location': redirectUrl
         })
-        console.log(`User Logged In: ${user.username}`);
+
         res.end();
       }else{
         res.writeHead(401,{'Content-Type': 'text/html'});
