@@ -2,6 +2,6 @@
 public/uploads/
 
 # আরও কিছু যা আপনার ইগনোর করা উচিত:
-node_modules/
+
 
 .env
