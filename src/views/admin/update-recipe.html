@@ -204,7 +204,7 @@
                 canvas.toBlob(async (blob) => {
                     formData.set('recipeImage', blob, 'recipe.webp');
                     await sendData(formData);
-                }, 'image/webp', 0.75); // Using 0.75 for consistency
+                }, 'image/webp', 0.30); // Using 0.75 for consistency
             } else {
                 await sendData(formData);
             }

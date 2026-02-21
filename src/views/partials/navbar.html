@@ -3,7 +3,7 @@
         <ul class="nav-links">
             <li><a href="/" class="active">Home</a></li>
             <li class="dropdown">
-                <a href="/recipes">Recipes <span class="arrow">▾</span></a>
+                <span class="arrow">Recipes▾</span>
                 <div class="dropdown-content">
                     <a href="/category/breakfast">Breakfast</a>
                     <a href="/category/lunch">Lunch</a>
@@ -104,9 +104,15 @@
 }
 
 .arrow {
-    font-size: 0.8rem;
-    margin-left: 3px;
-    vertical-align: middle;
+     display: block;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
 }
 
 @keyframes fadeIn {

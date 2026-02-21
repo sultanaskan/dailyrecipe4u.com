@@ -19,9 +19,7 @@
             <span>Discover the joy of cooking every day</span>
         </div>
         <div class="top-right">
-            dfasdfasdf
             <a href="https://play.google.com/store/apps/details?id=com.sikderenterprise.moneytracker" title="Money Tracker">Money Tracker</a>
-            <a href="https://play.google.com/store/apps/details?id=com.gamingvpnpro.pingbooster" title="Gaming VPN Pro">Gaming VPN Pro</a>
             <a href="https://play.google.com/store/apps/details?id=com.gamingvpnpro.pingbooster" title="Gaming VPN Pro">Gaming VPN Pro</a>
             <span class="date-today" id="current-date"></span>
         </div>
@@ -62,6 +60,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.top-right{
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    font-size: 1.4rem;
 }
 
 .top-right a {
@@ -181,6 +185,15 @@
         padding: 8px 14px; /* Slightly smaller on mobile to save space */
         font-size: 0.8rem;
     }
+ 
+    .logo-icon { font-size: 1rem; margin-right: 10px; }
+
+    .logo-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
 }
 </style>
 
@@ -203,15 +216,15 @@
 
 
         // close menu when clicking anywhere outside 
-        window.addEventListener('click', (e) =>{
-            //If the manue is open AND the click was NOT on the menu or the button
-            if(navLinks.classList.contains('mobile-active')){
-                if(!navLinks.contains(e.target) && !menuBtn.contains(e.target)){
-                    navLinks.classList.remove('mobile-active');
-                    menuBtn.classList.remove('open');
-                }
-            }
-        })
+        // window.addEventListener('click', (e) =>{
+        //     //If the manue is open AND the click was NOT on the menu or the button
+        //     if(navLinks.classList.contains('mobile-active')){
+        //         if(!navLinks.contains(e.target) && !menuBtn.contains(e.target)){
+        //             navLinks.classList.remove('mobile-active');
+        //             menuBtn.classList.remove('open');
+        //         }
+        //     }
+        // })
          // Auto-update the date in the top bar
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { 
             weekday: 'short', 

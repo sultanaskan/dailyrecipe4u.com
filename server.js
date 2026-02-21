@@ -130,16 +130,23 @@ const server = http.createServer(async (req, res) => {
 
 
   const isLogged = cookies?.session !== undefined;
-  const role = cookies?.session?.role ;
+  let session = cookies?.session;
+  let sessionObj;
+  if(session){
+    try {
+      sessionObj = sessionParser(session);      
+    } catch (error) {
+      console.log("Error parsing Session Coockie");
+    }
+  }
+
+  console.log("isLoged: ", isLogged, "Role: ", sessionObj?.role)
 
 
 // Route handling
-  if(pathName.startsWith('/admin') ) {
+  if(pathName.startsWith('/admin')  && isLogged && sessionObj?.role === "admin") {
     templatePath = path.join(__dirname, 'src', 'views', 'admin', routes[pathName]); 
-    if (!isLogged && role !== "admin") {
-       serveLoginPage(req, res); 
-    }else if (isLogged && role === "admin") {
-        switch(pathName){
+     switch(pathName){
           case '/admin/dashboard': serveAdminDashboard(req, res, templatePath, cookies); break;
           case '/admin/add-recipe':if(req.method === "GET"){
                                       serveAddRecipeForm(req, res, templatePath); break;
@@ -153,10 +160,8 @@ const server = http.createServer(async (req, res) => {
                                   }
           case '/admin/delete-recipe': handleDeleteRecipe(req, res, queryString); break;                        
           default:
-            res.writeHead(404);
-            res.end('Page Not Found');
+            serve404Page(req, res); break;
         }
-  }
   }else if(pathName.startsWith('/recipe')){
     switch(pathName){
       case '/recipe/review':if (isLogged) { 
@@ -190,18 +195,16 @@ const server = http.createServer(async (req, res) => {
                     register(req, res, templatePath); break;
                   };
        case '/profile':
-                    const userID = JSON.parse(Buffer.from(CookieParserHelper(req)?.session, 'base64').toString('utf-8')).userID;
-                    if(!userID){
+                    if(!isLogged){
                       res.writeHead(302, {'location': '/login'});
                       return res.end();
                     }
-                    serveProfilePage(req, res, userID); break;           
+                    serveProfilePage(req, res); break;           
       case '/logout' : logout(res, res); break;            
       case '/about': serveAboutPage(req, res); break;
       case '/contact': serveContactPage(req, res); break;
       default:
-        res.writeHead(404);
-        res.end('Page Not Found');
+        serve404Page(req, res); break;
     }
   }else if(pathName.startsWith('/category')){
      serveCatagoryPage(req, res);
@@ -300,7 +303,7 @@ async function serveHomePage(req, res) {
 
     // 4. Generate Dynamic HTML for sections
     const latestHtml = latest.map(r => renderRecipeCard(r)).join('');
-    const trendingHtml = trending.map(r => `<div class="trend-item"><a href="/recipe/${r.slug}">${r.title}</a></div>`).join('');
+    const trendingHtml = trending.map(r => renderRecipeCard(r)).join('');
     const sliderItemsHtml = featured.map(recipe => `
     <div class="swiper-slide">
         <a href="/recipe/${recipe.slug}" class="slide-card">
@@ -336,19 +339,25 @@ async function serveHomePage(req, res) {
 
     // Helper function to turn a recipe object into HTML
     function renderRecipeCard(recipe) {
-        return `
-            <div class="recipe-card">
-                <a href="/recipe/${recipe.slug}">
-                    <img src="${recipe.image || '/uploads/default.webp'}" alt="${recipe.title}" loading="lazy">
-                    <div class="card-content">
-                        <span class="card-category">${recipe.category || 'General'}</span>
-                        <h3>${recipe.title}</h3>
-                        <p>${recipe.description ? recipe.description.substring(0, 80) + '...' : ''}</p>
-                    </div>
-                </a>
+    return `
+        <div class="recipe-card">
+            <div class="card-image-wrapper">
+                <img src="${recipe.image || '/uploads/default.webp'}" alt="${recipe.title}" loading="lazy">
+                <span class="card-category">${recipe.category || 'General'}</span>
             </div>
-        `;
-    }
+            <div class="card-content">
+                <h3 class="card-title">${recipe.title}</h3>
+                <p class="card-description">
+                    ${recipe.description ? recipe.description : 'Explore this delicious homemade recipe perfectly crafted for you.'}
+                </p>
+                <a href="/recipe/${recipe.slug}" class="card-link-overlay" aria-label="View ${recipe.title}"></a>
+                <div class="card-footer">
+                    <span class="read-more">View Recipe →</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
 }
 
 
@@ -726,7 +735,7 @@ async function logout(req,res ){
         res.writeHead(302, {
           'Set-Cookie': `session=${''}; HttpOnly; Path=/; Max-Age=0`,
           'Location': '/login'
-        })
+        });
         res.end();
   }
 
@@ -1102,50 +1111,64 @@ async function serveCatagoryPage(req, res) {
 
 
 //Serve profile page 
-async function serveProfilePage(req, res, userId) {
+async function serveProfilePage(req, res) {
     const templatePath = path.join(process.cwd(), 'src', 'views', 'profile.html');
-    console.log('User id: ', userId);
-    try {
-        // 1. Fetch user from database
-        // Replace 'db.users.find' with your actual database query logic
-        const db = await connectDB();
-        const user = await db.collection('users').findOne({ _id: new ObjectId(userId) }); 
+    const session = CookieParserHelper(req)?.session;
+    if(session){
+       const userId = sessionParser(session)?.userID;
+      try {
+          // 1. Fetch user from database
+          // Replace 'db.users.find' with your actual database query logic
+          const db = await connectDB();
+          const user = await db.collection('users').findOne({ _id: new ObjectId(userId) }); 
 
-        if (!user) {
-            res.writeHead(404);
-            return res.end("User not found");
-        }
+          if (!user) {
+              res.writeHead(404);
+              return res.end("User not found");
+          }
 
-        // 2. Read the HTML template
-        fs.readFile(templatePath, 'utf8', (err, html) => {
-            if (err) {
-                res.writeHead(500);
-                return res.end("Error loading profile template");
-            }
+          // 2. Read the HTML template
+          fs.readFile(templatePath, 'utf8', (err, html) => {
+              if (err) {
+                  res.writeHead(500);
+                  return res.end("Error loading profile template");
+              }
 
-            // 3. SSR Replacement Logic
-            // We use user data fetched from the DB above
-            let renderedHtml = html
-                .replace('{{FULL_NAME}}', user.fullName || 'Valued Member')
-                .replace('{{USERNAME}}', user.username || 'User')
-                .replace('{{EMAIL}}', user.email || 'N/A')
-                .replace('{{ROLE}}', user.role || 'Member')
-                .replace('{{JOIN_DATE}}', user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recent')
-                .replace('{{RECIPE_COUNT}}', user.recipeCount || 0)
-                .replace('{{USER_INITIAL}}', (user.username || 'U').charAt(0).toUpperCase())
-                .replace('{{HEADER}}', cachedHeader)
-                .replace('{{NAVBAR}}', cachedNavbar)
-                .replace('{{FOOTER}}', cachedFooter);
-            // 4. Send the final HTML
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(renderedHtml);
-        });
+              // ১. অ্যাডমিন চেক এবং ড্যাশবোর্ড বাটন হ্যান্ডলিং
+              let dashboardButton = '';
+              if (user.role === 'admin') {
+                  dashboardButton = '<a href="/admin/dashboard" class="btn btn-dashboard">Go Dashboard</a>';
+              }
 
-    } catch (error) {
-        console.error("Database Error:", error);
-        res.writeHead(500);
-        res.end("Internal Server Error");
-    }
+              // 3. SSR Replacement Logic
+              // We use user data fetched from the DB above
+              let renderedHtml = html
+                  .replace('{{FULL_NAME}}', user.fullName || 'Valued Member')
+                  .replace('{{USERNAME}}', user.username || 'User')
+                  .replace('{{EMAIL}}', user.email || 'N/A')
+                  .replace('{{ROLE}}', user.role || 'Member')
+                  .replace('{{JOIN_DATE}}', user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recent')
+                  .replace('{{RECIPE_COUNT}}', user.recipeCount || 0)
+                  .replace('{{USER_INITIAL}}', (user.username || 'U').charAt(0).toUpperCase())
+                  .replace('{{HEADER}}', cachedHeader)
+                  .replace('{{NAVBAR}}', cachedNavbar)
+                  .replace('{{FOOTER}}', cachedFooter)
+                  .replace('<a href="/admin/dashboard" class="btn btn-dashboard">Go Dashboard</a>', dashboardButton);
+              // 4. Send the final HTML
+              res.writeHead(200, { 'Content-Type': 'text/html' });
+              res.end(renderedHtml);
+          });
+
+      } catch (error) {
+          console.error("Database Error:", error);
+          res.writeHead(500);
+          res.end("Internal Server Error");
+      }
+      }else{
+        res.writeHead(302, {'Location': '/login'});
+        res.end("Profile page serving failed due to empty session");
+      }
+   
 }
 
 
@@ -1230,6 +1253,20 @@ function CookieParserHelper(req){
       // value = JSON.parse(Buffer.from(value, "base64"));
     })
     return cookies;
+}
+
+//Session parser
+function sessionParser(session){
+   let sessionObj;
+   if(session){
+    try {
+      sessionObj = JSON.parse(Buffer.from(session, 'base64').toString('utf-8'));
+    } catch (error) {
+      console.log("Session parsing error", error)
+    }
+   }
+  
+   return sessionObj;
 }
 
 

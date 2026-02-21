@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="/public/css/style.css">
     <title>My Profile | DailyRecipe4U</title>
     <style>
         :root {
@@ -148,6 +149,12 @@
             border: 1px solid #ffebeb;
         }
 
+        .btn-dashboard{
+            background: #a1d0ff;
+            color: #000000;
+            border: 1px solid #ffebeb;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             opacity: 0.9;
@@ -207,6 +214,7 @@
 
                 <div class="profile-actions">
                     <a href="/profile/edit" class="btn btn-edit">Edit Profile</a>
+                    <a href="/admin/dashboard" class="btn btn-dashboard">Go Dashboard</a>
                     <a href="/logout" class="btn btn-logout">Sign Out</a>
                 </div>
             </div>
