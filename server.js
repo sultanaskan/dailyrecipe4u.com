@@ -71,7 +71,12 @@ const routes = {
   '/admin/delete-recipe': "deletefunction",
   '/about': 'about.html',
   '/contact': 'contact.html',
-  '/profile' : 'profile.html'
+  '/profile' : 'profile.html',
+
+
+  '/sitemap.xml': 'sitemap.xml',
+  '/robots.txt': 'robots.txt'
+
   }
 
 
@@ -87,7 +92,25 @@ const server = http.createServer(async (req, res) => {
 
   //1. HANDLE STATIC IMAGES
   // We look for any request that ends with common image extensions
-  if(pathName.match(/\.(jpg|jpeg|png|gif|webp|ico)$/)){
+
+
+
+  const isLogged = cookies?.session !== undefined;
+  let session = cookies?.session;
+  let sessionObj;
+  if(session){
+    try {
+      sessionObj = sessionParser(session);      
+    } catch (error) {
+      console.log("Error parsing Session Coockie");
+    }
+  }
+
+  console.log("isLoged: ", isLogged, "Role: ", sessionObj?.role)
+
+
+// Route handling
+  if(pathName.match(/\.(jpg|jpeg|png|gif|webp|ico|)$/)){
 
     //We extract just the filename from the URL
     // (This fixes the / recipe/image.jpg problem)
@@ -126,25 +149,23 @@ const server = http.createServer(async (req, res) => {
         res.end(data);
     });
     return;
-}
-
-
-  const isLogged = cookies?.session !== undefined;
-  let session = cookies?.session;
-  let sessionObj;
-  if(session){
-    try {
-      sessionObj = sessionParser(session);      
-    } catch (error) {
-      console.log("Error parsing Session Coockie");
-    }
-  }
-
-  console.log("isLoged: ", isLogged, "Role: ", sessionObj?.role)
-
-
-// Route handling
-  if(pathName.startsWith('/admin')  && isLogged && sessionObj?.role === "admin") {
+  }else if(pathName.match(/\.(xml|txt)$/)){
+    const fileName = path.basename(pathName);
+    const filePath = path.join(process.cwd(), fileName);
+    
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        serve404Page(req, res);
+        return;
+      }else if(data){
+        console.log(`Serving static file: ${data}`);
+        const contentType = fileName.endsWith('.xml') ? 'application/xml' : 'text/plain';
+        res.writeHead(200, { 'Content-Type': contentType });
+        res.end(data);  
+        return;
+      }
+    });
+  }else if(pathName.startsWith('/admin')  && isLogged && sessionObj?.role === "admin") {
     templatePath = path.join(__dirname, 'src', 'views', 'admin', routes[pathName]); 
      switch(pathName){
           case '/admin/dashboard': serveAdminDashboard(req, res, templatePath, cookies); break;
